@@ -1,0 +1,68 @@
+#include "Grafo.h"
+
+Grafo::Grafo(int N, double p) : grf_nodos(N, p) {
+
+}
+
+Grafo::Grafo(ifstream& archivo) : grf_nodos(archivo) {
+
+}
+
+Grafo::Grafo(const Grafo& orig) : grf_nodos(orig.grf_nodos) {
+
+}
+
+Grafo::~Grafo() {
+}
+
+bool Grafo::xstVrt(int idVrt) const {
+    return grf_nodos.xstVrt(idVrt);
+}
+
+bool Grafo::xstAdy(int idVrtO, int idVrtD) const {
+    return grf_nodos.xstAdy(idVrtO,idVrtD);
+}
+
+void Grafo::obtIdVrtAdys(int idVrt, vector< int >& rspRetornar) const {
+    grf_nodos.obtIdVrtAdys(idVrt,rspRetornar);
+}
+
+int Grafo::obtCntVrtAdys(int idVrt) const {
+    return grf_nodos.obtCntVrtAdys(idVrt);
+}
+
+Nodo Grafo::operator[](int idVrt) const {
+   return grf_nodos.operator [](idVrt);
+}
+
+int Grafo::obtTotArc() const {
+    return grf_nodos.obtTotArc();
+}
+
+int Grafo::obtTotVrt() const {
+    return grf_nodos.obtTotVrt();
+}
+
+int Grafo::obtTotVrtSusceptibles() const {
+
+}
+
+int Grafo::obtTotVrtInfectados() const {
+ 
+}
+
+int Grafo::obtTotVrtResistentes() const {
+
+}
+
+Nodo& Grafo::operator[](int idVrt) {
+    return grf_nodos.operator [](idVrt);
+}
+
+double Grafo::coeficienteLocalAgrupamiento(int idVrt) const {
+    return grf_nodos.coeficienteLocalAgrupamiento(idVrt);
+}
+
+bool Grafo::conformidadPareto() const {
+    return grf_nodos.conformidadPareto();
+}
