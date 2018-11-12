@@ -44,17 +44,31 @@ int Grafo::obtTotVrt() const {
 }
 
 int Grafo::obtTotVrtSusceptibles() const {
-
+    int cantSusceptibles = 0;
+    for( int i = 0; i < grf_nodos.obtTotVrt(); i++ ){
+        if( grf_nodos[i].obtEstado() == grf_nodos[i]::E::S )
+            cantSusceptibles++;
+    }
+    return cantSusceptibles;
 }
 
 int Grafo::obtTotVrtInfectados() const {
- 
+    int cantInfectados = 0;
+    for( int i = 0; i < grf_nodos.obtTotVrt(); i++ ){
+        if( grf_nodos[i].obtEstado() == grf_nodos[i]::E::I )
+            cantInfectados++;
+    }
+    return cantInfectados;
 }
 
 int Grafo::obtTotVrtResistentes() const {
-
+    int cantResistentes = 0;
+    for( int i = 0; i < grf_nodos.obtTotVrt(); i++ ){
+        if( grf_nodos[i].obtEstado() == grf_nodos[i]::E::R )
+            cantResistentes++;
+    }
+    return cantResistentes;
 }
-
 Nodo& Grafo::operator[](int idVrt) {
     return grf_nodos.operator [](idVrt);
 }
