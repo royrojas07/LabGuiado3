@@ -39,7 +39,7 @@ public:
     friend ostream& operator<<(ostream& s, const Nodo& n);
     
     // EFE: modifica *this con los valores de n.
-    Nodo operator=(const Nodo& n) const;
+    Nodo operator=(const Nodo& n);
     
 private:
     E estado; // representa el estado del nodo

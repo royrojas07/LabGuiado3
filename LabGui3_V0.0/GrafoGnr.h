@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <chrono>
 using namespace std;
 
 template < typename T >
@@ -137,23 +138,136 @@ private:
         }; // constructor de copias de Vrt
     };
 
-    vector< T > vectorVrts; // vector de vértices
+    vector< Vrt<T> > vectorVrts; // vector de vértices
 };
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(int N, double p){
+    vectorVrts.resize( N );
+    for( int i = 0; i < N; i++ ){
+        Vrt<T> vertice;
+        vectorVrts[i] = vertice;
+    }
+    unsigned int seed = chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+    uniform_int_distribution<int> distribution(0, 9999);
+    double random;
+    for( int i = 0; i < N; i++ ){
+        for( int j = i+1; j < N; j++ ){
+            random = (double)(distribution(generator))/10000.0;
+            if( random <= p ){
+                vectorVrts[i].lstAdy.push_back( j );
+                vectorVrts[j].lstAdy.push_back( i );
+            }
+        }
+    }
 }
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(int N, int K, double beta){
+    vectorVrts.resize( N );
+    for( int n = 0; n < N; n++ ){
+        Vrt<T> vrt;
+        vectorVrts[n] = vrt;
+    }
+    
+    //ANILLO
+    int iz;
+    int dr;
+    for( int n = 0; n < N; n++ ){
+        iz = n;
+        dr = n;
+        for( int j = 0; j < K; j++ ){
+            if( j < K/2 ){
+                iz--;
+                if( iz < 0 )
+                    iz = N-1;
+                vectorVrts[n].lstAdy.push_back(iz);
+            } else {
+                dr++;
+                if( dr > N-1 )
+                    dr = 0;
+                vectorVrts[n].lstAdy.push_back(dr);
+            }
+        }
+    }
+    
+    //REALAMBRAMIENTO
+    unsigned int seed = chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
+    uniform_int_distribution<int> distribution(0, 9999);
+    uniform_int_distribution<int> distribution1(0, N-1);
+    double nodRand;
+    bool nodRandValido;
+    double proRand;
+    int limInferior;
+    int limSuperior;
+    list<int>::iterator itParaInsert;
+    for( int n = 0; n < N; n++ ){
+        limInferior = n+1;
+        limSuperior = n+K/2;
+        if( N <= limInferior ){
+            limInferior -= N;
+            limSuperior -= N;
+        }
+        itParaInsert = vectorVrts[n].lstAdy.begin();
+        while( !(limInferior <= *itParaInsert && *itParaInsert <= limSuperior) )
+            itParaInsert++;
+        for( int i = K/2; i < K; i++ ){
+            proRand = (double)(distribution(generator))/10000;
+            if( proRand <= beta ){
+                nodRand = distribution1(generator);
+                nodRandValido = false;
+                while( !nodRandValido ){
+                    nodRandValido = true;
+                    for( list<int>::const_iterator t = vectorVrts[n].lstAdy.begin(); t != vectorVrts[n].lstAdy.end(); t++ ){
+                        if( *t == nodRand || nodRand == n ){
+                            nodRandValido = false;
+                            t = --(vectorVrts[n].lstAdy.end());
+                        }
+                    }
+                    if( !nodRandValido )
+                        nodRand = (rand()%N);
+                }
+                vectorVrts[nodRand].lstAdy.push_back(n);
+                vectorVrts[*itParaInsert].lstAdy.remove(n);
+                *itParaInsert = nodRand;
+                itParaInsert++;
+            }
+        }
+    }
 }
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(ifstream& archivo){
+    string cantNodos;
+    getline( archivo, cantNodos );
+    int nodos = atoi( cantNodos.c_str() );
+    int c;
+    vectorVrts.resize( nodos );
+    for( int i = 0; i < nodos; i++ ){
+        Vrt<T> vertice;
+        vectorVrts[i] =  vertice;
+    }
+    for( int i = 0; i < nodos; i++ ){
+        while( archivo.peek() != '\n' && !archivo.eof() ){
+            archivo >> c;
+            vectorVrts[i].lstAdy.push_back(c);
+            archivo.get();
+        }
+        archivo.get();
+    }
+    archivo.close();
 }
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(const GrafoGnr< T >& orig){
+    vectorVrts.resize( orig.obtTotVrt() );
+    for( int i = 0; i < orig.obtTotVrt(); i++ ){
+        Vrt<T> vertice( orig[i] );
+        vectorVrts[i] = vertice;
+        vectorVrts[i].lstAdy = orig.vectorVrts[i].lstAdy;
+    }
 }
 
 template < typename T >
@@ -162,44 +276,133 @@ GrafoGnr< T >::~GrafoGnr(){
 
 template < typename T >
 bool GrafoGnr< T >::xstVrt(int idVrt) const{
+    bool result = false;
+    if( 0 <= idVrt && idVrt < vectorVrts.size() )
+        result = true;
+    return result;
 }
 
 template < typename T >
 bool GrafoGnr< T >::xstAdy(int idVrtO, int idVrtD) const{
+    int i =idVrtO;
+    int j=idVrtD;
+    bool func =false;
+    list<int>::const_iterator recor = vectorVrts[i].lstAdy.begin();
+    list<int>::const_iterator fin = vectorVrts[i].lstAdy.end();
+    while(recor!=fin){
+        if(*recor==j){
+            func=true;
+            recor=fin;
+        }
+        if(recor != fin){
+            recor++;
+        }
+    }
+    return func;
 }
 
 template < typename T >
 void GrafoGnr< T >::obtIdVrtAdys(int idVrt, vector< int >& rsp) const{
+    list<int>::const_iterator i = vectorVrts[idVrt].lstAdy.begin();
+    list<int>::const_iterator end = vectorVrts[idVrt].lstAdy.end();
+    rsp.resize( vectorVrts[idVrt].lstAdy.size() );
+    int j = 0;
+    while( i != end ){
+        rsp[j] = *i;
+        i++;
+        j++;
+    }
 }
 
 template < typename T >
 int GrafoGnr< T >::obtCntVrtAdys(int idVrt) const{
+    int tam = vectorVrts[idVrt].lstAdy.size();
+    return tam;
 }
 
 template < typename T >
 T GrafoGnr< T >::operator[](int idVrt) const{
+    return vectorVrts[idVrt].t;
 }
 
 template < typename T >
 int GrafoGnr< T >::obtTotArc() const{
+    int total=0;
+    int N=obtTotVrt();
+    for( int i = 0; i < N; i++ ){
+        total += vectorVrts[i].lstAdy.size();
+    }
+    total /= 2;
+    return total;
 }
 
 template < typename T >
 int GrafoGnr< T >::obtTotVrt() const{
+    return vectorVrts.size();
 }
 
 template < typename T >
 T& GrafoGnr< T >::operator[](int idVrt){
+    return vectorVrts[idVrt].t;
 }
 
 template < typename T >
 double GrafoGnr< T >::coeficienteLocalAgrupamiento(int idVrt) const{
+    int nodo=idVrt;
+    double resul=0;
+    double cuenta=0;
+    vector<int> nodos;
+    obtIdVrtAdys(nodo,nodos);
+    int tamano = nodos.size();
     
+    for(int i=0;i<tamano;i++){
+        for(int j=0;j<tamano;j++){
+            if( xstAdy(nodos[i], nodos[j])){
+                cuenta++;
+            }
+        }
+    }
+    cuenta=cuenta/2;
+    int vrtAdyNodo = obtCntVrtAdys(nodo);
+    double den=( vrtAdyNodo*(vrtAdyNodo - 1) );
+    resul= ( 2*(cuenta) )/den;
+    if(tamano==1){
+        resul=0;
+    }
+    
+    return resul;
 }
 
 template < typename T >
 bool GrafoGnr< T >::conformidadPareto() const{
-    
+    vector<double> coe;
+    int tamano=(vectorVrts.size());
+    coe.resize( tamano );
+    int i=0;
+    while(i < tamano){
+        coe[i] = coeficienteLocalAgrupamiento(i);
+        i++;
+    }
+
+    sort( coe.begin(), coe.end(), greater<double>() );
+
+    double cmenor=(vectorVrts.size())*0.20;
+    i=0;
+    double may = 0.0;
+    double men = 0.0;
+    while(i<(coe.size())){
+    if (i<cmenor){
+        men=men+coe[i];
+    }else{
+        may=may+coe[i];
+    }
+        i++;
+    }
+    if(men>=may){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 #endif /* GRAFOGNR_H */

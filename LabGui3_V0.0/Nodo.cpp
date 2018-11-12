@@ -25,9 +25,11 @@ void Nodo::modEstado(E ne) {
 }
 
 ostream& operator<<(ostream& s, const Nodo& n) {
-
+    s << n.estado;
+    return s;
 }
 
-Nodo Nodo::operator=(const Nodo& n) const{
-    
+Nodo Nodo::operator=(const Nodo& n){
+    this->estado = n.estado;
+    return *this;
 }
