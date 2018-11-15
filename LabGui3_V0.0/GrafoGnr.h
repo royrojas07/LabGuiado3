@@ -143,11 +143,7 @@ private:
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(int N, double p){
-    vectorVrts.resize( N );
-    for( int i = 0; i < N; i++ ){
-        Vrt<T> vertice;
-        vectorVrts[i] = vertice;
-    }
+     vectorVrts.resize( N, Vrt<T>() );
     unsigned int seed = chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     uniform_int_distribution<int> distribution(0, 9999);
