@@ -41,10 +41,11 @@ int main(int argc, char** argv) {
         ofstream salida( salidaExperimento.c_str() );
         for( int i = 0; i < 5; i++ ){
             archivoExperimentos >> parametrosSimulacion[i];
-            if( (i == 1 || i == 3 ) && !(parametrosSimulacion[i] <= 0.1) ){
-                cout << "El valor vsc o rc tomado de " << nombreExperimentos << " no se encuentra en el rango apropiado para hacer una comparacion con netlogoweb.org" << endl;
-            } else if( i == 4 && !(parametrosSimulacion[i] <= 1.0) ){
-                cout << "El valor grc tomado de " << nombreExperimentos << " no se encuentra en el rango apropiado." << endl;
+            if( (i != 0 && i != 2) ){
+                if( !(parametrosSimulacion[i] <= 1.0) )
+                    cout << "El valor vsc, rc o grc tomado de " << nombreExperimentos << " no se encuentra en el rango apropiado para hacer una comparacion con netlogoweb.org" << endl;
+                if( i != 4 )
+                    parametrosSimulacion[i] *= 0.10;
             }
         }
         archivoExperimentos >> repeticiones;
