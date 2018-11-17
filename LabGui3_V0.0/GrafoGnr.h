@@ -260,9 +260,11 @@ template < typename T >
 GrafoGnr< T >::GrafoGnr(const GrafoGnr< T >& orig){
     vectorVrts.resize( orig.obtTotVrt() );
     for( int i = 0; i < orig.obtTotVrt(); i++ ){
-        Vrt<T> vertice( orig[i] );
+        Vrt<T> vertice( orig.vectorVrts[i] );
         vectorVrts[i] = vertice;
-        vectorVrts[i].lstAdy = orig.vectorVrts[i].lstAdy;
+//      Vrt<T> vertice( orig[i] );
+//      vectorVrts[i] = vertice;
+//      vectorVrts[i].lstAdy = orig.vectorVrts[i].lstAdy;
     }
 }
 
