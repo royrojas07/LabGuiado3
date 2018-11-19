@@ -326,7 +326,7 @@ void testRedesAleatorias(){
     promedTotArc = promedTotArc / 100;
     cantVrt = cantVrt / 100;
     norma = p*N*(N-1)/2;
-    segun = N*p;
+    segun = N*(p + 0.1);
     if( !( promedTotArc < norma + segun && norma - segun < promedTotArc ) || cantVrt != N ){
         std::cout << "%TEST_FAILED% time=0 testname=testGrafo (newsimpletest1) Redes Aleatorias(10000 Nodos)" << std::endl;
     }
