@@ -326,7 +326,7 @@ void testRedesAleatorias(){
     promedTotArc = promedTotArc / 100;
     cantVrt = cantVrt / 100;
     norma = p*N*(N-1)/2;
-    segun = N*(p + 0.1);
+    segun = N*(p + 0.2);
     if( !( promedTotArc < norma + segun && norma - segun < promedTotArc ) || cantVrt != N ){
         std::cout << "%TEST_FAILED% time=0 testname=testGrafo (newsimpletest1) Redes Aleatorias(10000 Nodos)" << std::endl;
     }
@@ -411,7 +411,7 @@ int main(int argc, char** argv) {
     cout << "Prueba a constructor de pequeños mundos finalizada" << endl;
 
     cout << "Prueba a constructor de redes aleatorias iniciada" << endl;
-    //testRedesAleatorias();
+    testRedesAleatorias();
     cout << "Prueba a constructor de redes aleatorias finalizada" << endl;
 
     cout << "Prueba a conformidad pareto iniciada" << endl;
