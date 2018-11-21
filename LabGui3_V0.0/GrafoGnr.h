@@ -143,7 +143,7 @@ private:
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(int N, double p){
-     vectorVrts.resize( N, Vrt<T>() );
+    vectorVrts.resize( N, Vrt<T>() );
     unsigned int seed = chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
     uniform_int_distribution<int> distribution(0, 9999);
@@ -161,11 +161,7 @@ GrafoGnr< T >::GrafoGnr(int N, double p){
 
 template < typename T >
 GrafoGnr< T >::GrafoGnr(int N, int K, double beta){
-    vectorVrts.resize( N );
-    for( int n = 0; n < N; n++ ){
-        Vrt<T> vrt;
-        vectorVrts[n] = vrt;
-    }
+    vectorVrts.resize( N, Vrt<T>() );
     
     //ANILLO
     int iz;
@@ -240,11 +236,7 @@ GrafoGnr< T >::GrafoGnr(ifstream& archivo){
     getline( archivo, cantNodos );
     int nodos = atoi( cantNodos.c_str() );
     int c;
-    vectorVrts.resize( nodos );
-    for( int i = 0; i < nodos; i++ ){
-        Vrt<T> vertice;
-        vectorVrts[i] =  vertice;
-    }
+    vectorVrts.resize( nodos, Vrt<T>() );
     for( int i = 0; i < nodos; i++ ){
         while( archivo.peek() != '\n' && !archivo.eof() ){
             archivo >> c;

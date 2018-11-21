@@ -36,7 +36,7 @@ int Grafo::obtCntVrtAdys(int idVrt) const {
 }
 
 Nodo Grafo::operator[](int idVrt) const {
-   return grf_nodos.operator [](idVrt);
+    return grf_nodos[idVrt];
 }
 
 int Grafo::obtTotArc() const {
@@ -74,7 +74,7 @@ int Grafo::obtTotVrtResistentes() const {
     return cantResistentes;
 }
 Nodo& Grafo::operator[](int idVrt) {
-    return grf_nodos.operator [](idVrt);
+    return grf_nodos[idVrt];
 }
 
 double Grafo::coeficienteLocalAgrupamiento(int idVrt) const {

@@ -25,7 +25,14 @@ void Nodo::modEstado(E ne) {
 }
 
 ostream& operator<<(ostream& s, const Nodo& n) {
-    s << n.estado;
+    string estado;
+    if( n.estado == 0 )
+        estado = "Susceptible";
+    else if( n.estado == 1 )
+        estado = "Infectado";
+    else if( n.estado == 2 )
+        estado = "Resistente";
+    s << estado;
     return s;
 }
 
